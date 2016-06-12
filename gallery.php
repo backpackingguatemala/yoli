@@ -16,10 +16,12 @@
 
 		// Pulls and parses data.
 		$result = fetchData("https://api.instagram.com/v1/users/{$userid}/media/recent/?access_token={$accessToken}");
-		$result = json_decode($result);
+		$result2 = json_decode($result);
+		var_dump($result2);
+		
 	?>
 
 
-	<?php foreach ($result-> data as $post): ?>
+	<?php foreach ($result-> data as $post){ ?>
 		<a class="group" rel="group1" href="<?= $post->images->standard_resolution->url ?>"><img src="<?= $post->images->thumbnail->url ?>"></a>
-	<?php endforeach ?>
+	<?php }; ?>
