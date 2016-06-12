@@ -1,8 +1,7 @@
-	<?php
+<?php
 		// Supply a user id and an access token
 		$userid = "182663178";
 		$accessToken = "182663178.c5f2f7c.0be8ecc031494667a92ddfd51e1c2ac4";
-
 		// Gets our data
 		function fetchData($url){
 		     $ch = curl_init();
@@ -13,11 +12,9 @@
 		     curl_close($ch); 
 		     return $result;
 		}
-
 		// Pulls and parses data.
 		$result = fetchData("https://api.instagram.com/v1/users/{$userid}/media/recent/?access_token={$accessToken}");
-		$result2 = json_decode($result);
-		var_dump($result2);
+		$result = json_decode($result);
 		
 	?>
 
