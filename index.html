@@ -4,23 +4,48 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yoli - Tu pared merece tus fotografías</title>
+    <title>Yoli</title>
     <link rel="stylesheet" href="css/foundation.css">
     <link rel="stylesheet" href="css/app.css">
   </head>
-  <body>
+  <body style="background:#CC647D;">
   <div class="row">
     <div class="small-12 columns">
-      <a href="https://api.instagram.com/oauth/authorize/?client_id=c5f2f7c10403482f9d10a56036212b79&redirect_uri=http://carambamoreno.com/yoli/&response_type=token"> CONNECT</a>      
+      <a href="https://api.instagram.com/oauth/authorize/?client_id=c5f2f7c10403482f9d10a56036212b79&redirect_uri=http://carambamoreno.com/yoli&response_type=code"> CONNECT</a>      
     </div>
   </div>
   
-  
   <?php
-		// Supply a user id and an access token
-		$userid = "182663178";
-		$accessToken = "182663178.c5f2f7c.0be8ecc031494667a92ddfd51e1c2ac4";
-		// Gets our data
+		
+	if(strpos($_SERVER['REQUEST_URI'], 'code') !== false){
+	
+	$code = $_GET['code'];		
+	$client_id = 'c5f2f7c10403482f9d10a56036212b79';
+	$client_secret = '4312b506aea54da49b0ec67dcfd047ed';
+	$redirect_url = 'http://carambamoreno.com/yoli';
+	
+		
+	$url = "https://api.instagram.com/oauth/access_token";
+    
+    $access_token_parameters = array(
+        'client_id'                =>     $client_id,
+        'client_secret'            =>     $client_secret,
+        'grant_type'               =>     'authorization_code',
+        'redirect_uri'             =>     $redirect_url,
+        'code'                     =>     $code
+    );
+
+$curl = curl_init($url);  
+    curl_setopt($curl,CURLOPT_POST,true);  
+    curl_setopt($curl,CURLOPT_POSTFIELDS, $access_token_parameters);  
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);   
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    $result = curl_exec($curl); 
+    curl_close($curl);  
+
+    $arr = json_decode($result, true);
+
+	}
 		function fetchData($url){
 		     $ch = curl_init();
 		     curl_setopt($ch, CURLOPT_URL, $url);
@@ -31,18 +56,19 @@
 		     return $result;
 		}
 		// Pulls and parses data.
-		$result = fetchData("https://api.instagram.com/v1/users/{$userid}/media/recent/?access_token={$accessToken}");
+		$result = fetchData("https://api.instagram.com/v1/users/{$arr['user']['id']}/media/recent/?access_token={$arr['access_token']}");
 		$result = json_decode($result);
-		
 	?>
 
 
 	<?php foreach ($result-> data as $post){ ?>
 		<a class="group" rel="group1" href="<?= $post->images->standard_resolution->url ?>"><img src="<?= $post->images->thumbnail->url ?>"></a>
 	<?php }; ?>
+		
+
 	
-	
-	
+  
+  <img src="img/yoli.svg" id="logo" />
   
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/what-input.js"></script>
